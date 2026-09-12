@@ -1,0 +1,222 @@
+/* ---------------------------------------------------------------
+   Nav toggle button — fixed, centred at the bottom of the viewport
+   --------------------------------------------------------------- */
+#nav-toggle {
+  height: 5rem;
+  width: 5rem;
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  bottom: 3rem;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  border-radius: 5rem;
+  outline: none;
+  box-shadow: 0 0 4rem rgb(0 0 0 / 35%);
+  cursor: pointer;
+  transition: transform var(--motion-decorative) ease-in-out,
+    background-color 300ms ease-in-out, color 300ms ease-in-out,
+    border-color 300ms ease-in-out;
+}
+
+#nav-toggle:hover {
+  transform: translateX(-50%) scale(1.04);
+}
+
+#nav-toggle:active {
+  transform: translateX(-50%) scale(0.96);
+}
+
+#nav-toggle:focus-visible {
+  outline: 3px solid var(--colour-accent);
+  outline-offset: 4px;
+}
+
+#nav-toggle svg {
+  height: 40px;
+  width: 40px;
+}
+
+#nav-toggle.isClosed {
+  background-color: var(--colour-bg);
+  color: var(--colour-accent);
+  border: 1px solid var(--colour-accent);
+}
+
+#nav-toggle.isClosed:hover {
+  background-color: var(--colour-accent);
+  color: var(--colour-bg);
+  border-color: var(--colour-bg);
+}
+
+#nav-toggle.isOpen {
+  background-color: var(--colour-accent);
+  color: var(--colour-bg);
+  border: 1px solid var(--colour-bg);
+}
+
+#nav-toggle.isOpen:hover {
+  background-color: var(--colour-bg);
+  color: var(--colour-accent);
+  border-color: var(--colour-accent);
+}
+
+/* ---------------------------------------------------------------
+   The navbar itself — parked off-screen, slides up on toggle
+   --------------------------------------------------------------- */
+#site-nav {
+  height: var(--nav-height);
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  overflow: auto;
+  background-color: var(--colour-bg);
+  color: var(--colour-text);
+  border-top: 1px solid #ffffff;
+  z-index: 3;
+  will-change: transform;
+  /* Longhands, not the shorthand: .showNav overrides only the delay, so both
+     directions always share one duration and easing. */
+  transition-property: transform, visibility;
+  transition-duration: var(--nav-duration), 0s;
+  transition-timing-function: var(--ease-nav), linear;
+  /* Closing: stay visible for the whole slide, then hide. */
+  transition-delay: 0s, var(--nav-duration);
+}
+
+/* Parked exactly one bar-height below the fold, so the whole travel is on
+   screen rather than most of it happening out of sight. */
+#site-nav.hideNav {
+  transform: translateY(100%);
+  visibility: hidden;
+}
+
+#site-nav.showNav {
+  transform: translateY(0%);
+  visibility: visible;
+  /* Opening: visible at once, so the slide-in is on screen. */
+  transition-delay: 0s, 0s;
+}
+
+#nav-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 1.75rem 10px 1rem;
+  transition: transform var(--nav-duration) var(--ease-nav);
+}
+
+#nav-links.hideLinks {
+  transform: translateY(70%) scale(0.8);
+}
+
+#nav-links.showLinks {
+  transform: translateY(0%) scale(1);
+  /* Trails the bar slightly so the cards settle into place. */
+  transition-delay: 120ms;
+}
+
+/* ---------------------------------------------------------------
+   Individual link cards
+   --------------------------------------------------------------- */
+.nav-link {
+  text-decoration: none;
+  color: var(--colour-text);
+  padding: 0 10px;
+  transition: scale var(--motion-decorative) ease-in-out;
+}
+
+/* Breathing room between the label, the card above it and the bar's top edge. */
+.nav-link > h3 {
+  margin: 0 0 0.75rem;
+  padding-left: 0.25rem;
+}
+
+.nav-link:hover {
+  scale: 0.9;
+}
+
+.nav-link:focus-visible {
+  outline: 3px solid var(--colour-accent);
+  outline-offset: 4px;
+  border-radius: 0.5rem;
+}
+
+.nav-link .img-container {
+  position: relative;
+  border: 2px solid var(--colour-accent);
+  width: max(20vw, 300px);
+  height: 20vh;
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.nav-link-image {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1.8 / 1;
+  object-fit: cover;
+}
+
+.nav-link .viewing {
+  position: absolute;
+  opacity: 0;
+}
+
+/* Section currently in view — flag it, and hold still on hover. */
+.nav-link.is-active:hover {
+  scale: 1;
+}
+
+.nav-link.is-active .viewing {
+  opacity: 1;
+  z-index: 1;
+}
+
+.nav-link.is-active .img-container::before {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  background: #ffa50090;
+}
+
+/* Reduced motion: drop the decorative flourishes, keep the functional slide. */
+@media (prefers-reduced-motion: reduce) {
+  #nav-toggle:hover,
+  #nav-toggle:active {
+    transform: translateX(-50%);
+  }
+
+  #nav-links.hideLinks {
+    transform: none;
+  }
+
+  #nav-links.showLinks {
+    transition-delay: 0s;
+  }
+
+  .nav-link:hover {
+    scale: 1;
+  }
+}
+
+/* Narrow viewports — stack the cards and let the bar scroll */
+@media (max-width: 900px) {
+  #nav-links {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-bottom: 8rem;
+  }
+
+  .nav-link .img-container {
+    width: min(90vw, 400px);
+  }
+}

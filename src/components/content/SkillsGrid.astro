@@ -1,0 +1,60 @@
+---
+import skills from '../../data/skills.json';
+---
+
+<ul class="skills-grid">
+  {
+    skills.map((skill) => (
+      <li class="skill-card">
+        <h4 class="skill-card__title">{skill.title}</h4>
+        <p class="skill-card__body">{skill.content}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Dark cards on the orange band, the same pairing CardList uses. */
+  .skill-card {
+    background-color: var(--colour-bg);
+    border: 2px solid var(--colour-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);
+    padding: 1.5rem;
+  }
+
+  .skill-card__title {
+    color: var(--colour-accent);
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    margin: 0 0 0.75rem;
+  }
+
+  .skill-card__body {
+    color: #ffffff;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .skills-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .skills-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

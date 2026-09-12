@@ -1,0 +1,108 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  /** 2 for a section heading on the one-pager; 1 for a standalone page. */
+  level?: 1 | 2;
+}
+
+const { title, description, level = 1 } = Astro.props;
+const Heading = level === 2 ? 'h2' : 'h1';
+---
+
+<header class="page-heading content" data-heading>
+  <div class="page-heading__title-wrap">
+    <Heading class="creative page-heading__title" data-text={title}>{title}</Heading>
+  </div>
+  <p class="page-heading__description">{description}</p>
+</header>
+
+<style>
+  .page-heading__title-wrap {
+    width: fit-content;
+  }
+
+  /* Section headings are h2s on the one-pager — hold the h1 size either way. */
+  .page-heading__title {
+    font-size: 2.5rem;
+  }
+
+  /* Outlined title with an orange fill that wipes across when it scrolls in. */
+  .creative {
+    position: relative;
+    color: var(--colour-bg);
+    -webkit-text-stroke: 3px #383d52;
+  }
+
+  .creative::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--colour-accent);
+    -webkit-text-stroke: 0 #383d52;
+    overflow: hidden;
+  }
+
+  /* Armed from JS, so without it the title simply sits there filled. */
+  .page-heading.is-armed .creative::before {
+    width: 0;
+    border-right: 2px solid var(--colour-accent);
+  }
+
+  .page-heading.is-wiping .creative::before {
+    animation: heading-wipe 1s forwards ease-out;
+  }
+
+  @keyframes heading-wipe {
+    0% {
+      width: 0;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+
+  .page-heading__description {
+    color: #ffffff;
+    font-size: 1.5rem;
+    max-width: 70ch;
+    margin: 1rem 0 0;
+  }
+
+  @media (max-width: 768px) {
+    .page-heading__title { font-size: 2rem; }
+    .page-heading__description { font-size: 1.25rem; }
+    .creative { -webkit-text-stroke-width: 2px; }
+  }
+
+  @media (max-width: 576px) {
+    .page-heading__title { font-size: 1.75rem; }
+    .page-heading__description { font-size: 1.125rem; }
+  }
+</style>
+
+<script>
+  // Same arming trick as Reveal: no JS or reduced motion leaves the title filled.
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const headings = document.querySelectorAll<HTMLElement>('[data-heading]');
+
+  if (!prefersReduced && 'IntersectionObserver' in window) {
+    headings.forEach((el) => el.classList.add('is-armed'));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-wiping');
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.2 },
+    );
+
+    headings.forEach((el) => observer.observe(el));
+  }
+</script>

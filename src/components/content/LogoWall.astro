@@ -1,0 +1,89 @@
+---
+import Reveal from '../ui/Reveal.astro';
+
+export type Company = {
+  name: string;
+  img: string;
+  link: string;
+};
+
+interface Props {
+  title: string;
+  companies: Company[];
+}
+
+const { title, companies } = Astro.props;
+---
+
+<Reveal delay={250}>
+  <section class="secondaryBG content">
+    <h3 class="section-title">{title}</h3>
+    <div class="logos">
+      {
+        companies.map((company) => (
+          <a class="logo-card" href={company.link} target="_blank" rel="noopener">
+            <img src={company.img} alt={company.name} loading="lazy" />
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</Reveal>
+
+<style>
+  h3 {
+    color: var(--colour-bg);
+  }
+
+  .logos {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo-card {
+    padding: 5px;
+    margin: 5px;
+    max-width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .logo-card img {
+    object-fit: contain;
+    width: 250px;
+    max-height: 100px;
+    filter: brightness(0) invert(1);
+    transition: filter 300ms ease;
+  }
+
+
+  .logo-card:hover img,
+  .logo-card:focus-visible img {
+    filter: brightness(1);
+  }
+
+
+  .logo-card:focus-visible {
+    outline: 3px solid var(--colour-bg);
+    outline-offset: 2px;
+  }
+
+  @media only screen and (max-width: 710px) {
+    h3 {
+      text-align: center;
+    }
+
+    .logos {
+      justify-content: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-card img {
+      transition: none;
+    }
+  }
+</style>

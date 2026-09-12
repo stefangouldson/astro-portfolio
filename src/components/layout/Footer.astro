@@ -1,0 +1,66 @@
+---
+/** Stamped at build time; the script below corrects it in the browser. */
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <img
+    class="site-footer__mark"
+    src="/logo/gouldsonium-nobg.png"
+    alt="Gouldsonium"
+    width="356"
+    height="113"
+    loading="lazy"
+  />
+  <p class="site-footer__copy">
+    &copy; <span data-current-year>{year}</span> Gouldsonium
+  </p>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: var(--colour-accent);
+    /* The nav button is fixed centre-bottom; space-between keeps it clear. */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 2.5rem 5vw;
+  }
+
+  .site-footer__mark {
+    height: 56px;
+    width: auto;
+    /* Gold-on-transparent by default — flatten it to sit on the orange. */
+    filter: brightness(0);
+  }
+
+  .site-footer__copy {
+    color: var(--colour-bg);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  @media (max-width: 710px) {
+    .site-footer {
+      flex-direction: column;
+      text-align: center;
+      /* Stacked, the content would sit under the fixed nav button. */
+      padding-bottom: 9rem;
+    }
+
+    .site-footer__mark {
+      height: 44px;
+    }
+  }
+</style>
+
+<script>
+  // The site is built statically, so the stamped year would sit frozen until
+  // the next deploy. Correct it against the visitor's clock.
+  const slot = document.querySelector('[data-current-year]');
+  const now = String(new Date().getFullYear());
+  if (slot && slot.textContent !== now) slot.textContent = now;
+</script>

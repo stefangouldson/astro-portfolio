@@ -1,0 +1,21 @@
+---
+import LogoWall, { type Company } from './LogoWall.astro';
+
+/** Clients whose projects are on this site. */
+const companies: Company[] = [
+  { name: 'Comoonity', img: '/logos/Comoonity.png', link: 'https://comoonity.com' },
+  { name: 'Barerooms', img: '/logos/barerooms.png', link: 'https://barerooms.com' },
+  {
+    name: 'Rosbotham Finance',
+    img: 'https://a.storyblok.com/f/247081/513x356/210de78197/rosbotham-logo.png',
+    link: 'https://rosbothamfinance.com',
+  },
+  {
+    name: 'Innosolutions',
+    img: 'https://innosolutionsltd.com/static/7b67dc81430146c884ae6822aca09d49/d558c/logo-removebg.webp',
+    link: 'https://innosolutionsltd.com',
+  },
+];
+---
+
+<LogoWall title="Worked With" companies={companies} />

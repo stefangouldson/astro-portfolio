@@ -1,0 +1,26 @@
+[
+ {
+  "title": "Problem Solving",
+  "content": "My number one skill is solving problems. With my projects, I take the time to understand the requirements and not only deliver what is needed but can devise improvements to the benefit of the business."
+ },
+ {
+  "title": "Software Development",
+  "content": "Through my various roles, projects and courses, I've developed a vast tech stack which allows me to build custom software that can match any project's requirements."
+ },
+ {
+  "title": "Agile Planning",
+  "content": "Having studied Agile methodologies, I can choreograph an entire project into tasks whilst maintaining flexiabilty for changing requirments. My preferred method is Kanban which focuses on visualising the entire project on boards which increases its transparency and collaboration."
+ },
+ {
+  "title": "Deployments",
+  "content": "Using AWS, I can deploy software built for optimized SEO. Deployments are done with reliabilty, performance and cost in mind depending on the project/business and their requirements."
+ },
+ {
+  "title": "DevOps Automation",
+  "content": "I have automated deployments to deploy selected branches of code to multiple environments, and I have automated creating AWS infrastructure using Pulumi/Terraform. Ideal for a SaaS company with multiple clients and products."
+ },
+ {
+  "title": "Communication",
+  "content": "Communicating with non technical staff during a project's development can be difficult, but I am experianced in bridging this gap. Converting a client's request into code and presenting these updates to the relevant stakeholders in a clear manner."
+ }
+]

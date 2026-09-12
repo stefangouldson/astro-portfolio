@@ -1,0 +1,86 @@
+---
+import Reveal from './Reveal.astro';
+import LinkCard from './LinkCard.astro';
+import type { CardItem } from '../../lib/contentful';
+
+interface Props {
+  items: CardItem[];
+  /** Route prefix, e.g. "/blog". */
+  base: string;
+  title?: string;
+  /** "white" = white section with orange cards; "secondary" = orange section. */
+  color?: 'white' | 'secondary';
+  /** Shown when there is nothing to list. */
+  empty?: string;
+}
+
+const { items, base, title, color = 'white', empty } = Astro.props;
+const variant = color === 'white' ? 'orange' : 'dark';
+---
+
+<Reveal>
+  <section class:list={['content', 'font-jet', color === 'white' ? 'whiteBG' : 'secondaryBG']}>
+    {title && <h2 class:list={['card-list__title', `is-${color}`]}>{title}</h2>}
+
+    {
+      items.length > 0 ? (
+        <div class="grid">
+          {items.map((item) => (
+            <LinkCard item={item} base={base} variant={variant} />
+          ))}
+        </div>
+      ) : (
+        <p class:list={['card-list__empty', `is-${color}`]}>{empty ?? 'Nothing here yet.'}</p>
+      )
+    }
+  </section>
+</Reveal>
+
+<style>
+  section {
+    padding-bottom: 100px;
+  }
+
+  .card-list__title.is-white {
+    color: var(--colour-accent);
+  }
+
+  .card-list__title.is-secondary {
+    color: #000000;
+  }
+
+  .card-list__empty {
+    font-family: var(--font-body);
+  }
+
+  .card-list__empty.is-white {
+    color: var(--colour-bg);
+  }
+
+  .card-list__empty.is-secondary {
+    color: #000000;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  @media (min-width: 425px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 768px) {
+    .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 1350px) {
+    .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  }
+</style>

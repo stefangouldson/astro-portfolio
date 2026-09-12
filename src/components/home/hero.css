@@ -1,0 +1,109 @@
+.welcome {
+  cursor: default;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  user-select: none;
+}
+
+.welcome .side {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  inset: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.welcome .title {
+  font-size: 8vw;
+  margin: 0 10vw;
+  width: 80vw;
+}
+
+.welcome .fancy {
+  font-family: var(--font-fancy);
+  font-size: 1.3em;
+  line-height: 0.8em;
+}
+
+#left-side {
+  background-color: var(--colour-bg);
+  width: 65%;
+  z-index: 10;
+}
+
+#left-side .title {
+  color: #ffffff;
+}
+
+#left-side .fancy {
+  color: var(--colour-accent);
+}
+
+#right-side {
+  background-color: var(--colour-accent);
+}
+
+#right-side .title {
+  color: #000000;
+}
+
+#right-side .fancy {
+  color: #ffffff;
+}
+
+/* ---------------------------------------------------------------
+   Bouncing chevron nudging the visitor toward the nav button
+   --------------------------------------------------------------- */
+.arrow {
+  position: absolute;
+  bottom: 17%;
+  left: 50%;
+  z-index: 20;
+  animation: arrow-bounce 1.5s infinite both 5s;
+}
+
+.arrow::before,
+.arrow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 30px;
+  height: 7px;
+  border-radius: 10px;
+  display: block;
+  background: #ffffff;
+}
+
+.arrow::before {
+  right: -24px;
+  transform: rotate(-45deg);
+}
+
+.arrow::after {
+  left: -24px;
+  transform: rotate(45deg);
+}
+
+@keyframes arrow-bounce {
+  0% {
+    transform: translateY(-60px);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow {
+    animation: none;
+    opacity: 1;
+  }
+}

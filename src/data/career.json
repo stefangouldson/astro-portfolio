@@ -1,0 +1,62 @@
+[
+  {
+    "period": "September 2024 – Present",
+    "role": "Software Developer",
+    "company": "CheqUp",
+    "summary": [
+      "My first month here was a case of hitting the ground running. CheqUp had just built a new pharmacy and needed a portal to run it, on a very tight deadline, and I built it in Laravel. Delivering a project of that size that quickly set the tone for the rest of the role.",
+      "Since then I have rebuilt the customer account area in Vue.js and helped maintain CheqUp's wider systems, from the admin interface through to customer service and clinical support. Most recently we have pivoted to React, using Claude Code to build our own custom subscription service in-house rather than pay for one, saving the company money."
+    ],
+    "tags": ["Laravel", "Vue", "React", "TypeScript", "Claude Code"]
+  },
+  {
+    "period": "March 2023 – August 2024",
+    "role": "Freelance Software Developer",
+    "summary": [
+      "Well equipped with knowledge on how to build, deploy and maintain websites/apps I decided to try my hand at freelancing. I acquired several projects from multiple different clients and gained valuable experience developing applications from its inception to completion. My communication skills increased having conversations with clients being able to ascertain what they wanted and provide a viable solution that was optimised, cost-effective and adaptable.",
+      "I had several projects for clients, like one startup called Barerooms who was looking for a developer to make updates to their pre-existing site while keeping the cost as low as possible. Other clients who had more of a budget wanted a site that could be customised, whilst still being fast and SEO friendly. I also developed full stack applications assisting with the UI/UX, database design and deployment to AWS. These were either fully automated and serverless or manually to an EC2."
+    ],
+    "tags": ["Nuxt.js", "Node.js", "CMS", "AWS", "EC2", "Serverless", "SEO"]
+  },
+  {
+    "period": "Jan 2022 – Feb 2023",
+    "role": "Infrastructure Engineer",
+    "company": "TMAC",
+    "summary": [
+      "During my time in this role, I have learnt a lot about using AWS. The Modular Analytics Company (TMAC) is a SaaS company, and I was responsible for the deployments of their products, which had multiple clients and versions.",
+      "I already had experience in deployments from my previous roles using EC2s and RDS, but this role took an even deeper dive using S3 buckets, CloudFront distributions, Lambda functions and API gateways. Additionally, I setup some CI/CD pipelines on their GitLab to automate deployments and even some Pulumi for 'infrastructure as code'."
+    ],
+    "tags": ["AWS", "Lambda", "CloudFront", "CloudFlare", "GitLab CI/CD", "Pulumi"]
+  },
+  {
+    "period": "July 2021 – Oct 2021",
+    "role": "Software Developer",
+    "company": "Cool Studio",
+    "summary": [
+      "Working in a digital agency was an improvement from my previous role, here I gained a much better understanding of software methodologies truly employing an Agile approach while working on multiple projects.",
+      "My main project here was remaking the main website using Gatsby. I was given a strict design to stick to which I had to adapt for mobile and break down into reusable modules. Then using Jira, we could create tasks and assign to sprints. I really enjoyed this project and gained a much deeper understanding of software development methodologies."
+    ],
+    "tags": ["Gatsby", "React.js", "Agile", "Jira"]
+  },
+  {
+    "period": "Aug 2019 – June 2021",
+    "role": "Apprentice Junior Developer",
+    "company": "Code Nation / Caspian Insurance",
+    "summary": [
+      "My first 12 weeks at Code Nation introduced me to software development and the final days of the course had me doing a group project of which I was elected leader.",
+      "As an apprentice I was responsible for completing 2 exams and in addition, I wrote up evidence of my work which proved I was able to design, build, test, deploy and maintain a full stack web application. I worked on several portals made in Laravel and Vue, ensuring the code was well commented, structured, and not repeated. I also helped improve the main website improving SEO.",
+      "I went above and beyond in this role making suggestions on how to improve Caspian's systems that were taken onboard like a tracker for referrals."
+    ],
+    "tags": ["HTML", "CSS", "JavaScript", "PHP", "Laravel", "Vue"]
+  },
+  {
+    "period": "September 2016 – July 2019",
+    "role": "Mathematics Student",
+    "company": "Liverpool John Moores University",
+    "summary": [
+      "University is where I first wrote code. MATLAB came first, then Python, which I used alongside Numpy, Pandas, Matplotlib and Seaborn to prepare and analyse data. That work led me into machine learning, and I built my own model with Sklearn, taking it from raw data through to something that could make a prediction.",
+      "Modules like operations research, business systems analysis and statistical analysis rounded this out, teaching me to look at a problem in terms of the system around it rather than the numbers alone. By the time I graduated I knew I wanted to spend less time analysing systems and more time building them."
+    ],
+    "tags": ["Python", "Numpy", "Pandas", "Matplotlib", "Seaborn", "Sklearn"]
+  }
+]

@@ -1,0 +1,82 @@
+---
+import Reveal from '../ui/Reveal.astro';
+import techstack from '../../data/techstack.json';
+---
+
+<Reveal>
+  <section class="whiteBG content">
+    <h3 class="section-title">Tech Stack</h3>
+    <p>
+      Through years of hands-on experience in software development, I have cultivated a
+      diverse and extensive tech stack
+    </p>
+    <ul class="tech-grid">
+      {techstack.map((tech) => (
+        <li>
+          <a class="tech-item" href={tech.url} target="_blank" rel="noopener">
+            {tech.name}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Reveal>
+
+<style>
+  h3 {
+    color: var(--colour-accent);
+    margin-bottom: 0;
+  }
+
+  p {
+    color: var(--colour-bg);
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    font-size: medium;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tech-item {
+    display: block;
+    text-align: center;
+    padding: 5px;
+    border: 2px solid #000000;
+    color: var(--colour-accent);
+    text-decoration: none;
+    transition:
+      color 300ms ease,
+      background-color 300ms ease;
+  }
+
+  .tech-item:focus-visible {
+    outline: 3px solid var(--colour-bg);
+    outline-offset: 3px;
+  }
+
+  /* Flip: the orange moves from the text to the fill. */
+  .tech-item:hover {
+    color: #000000;
+    background-color: var(--colour-accent);
+  }
+
+  @media (min-width: 768px) {
+    .tech-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      font-size: larger;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .tech-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 1350px) {
+    .tech-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  }
+</style>

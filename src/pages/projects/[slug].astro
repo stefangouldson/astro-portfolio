@@ -1,0 +1,65 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHeading from '../../components/ui/PageHeading.astro';
+import CardList from '../../components/ui/CardList.astro';
+import Reveal from '../../components/ui/Reveal.astro';
+import { getProjects } from '../../lib/contentful';
+import { renderRichText } from '../../lib/rich-text';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project, more: projects.filter((other) => other.slug !== project.slug) },
+  }));
+}
+
+const { project, more } = Astro.props;
+const body = renderRichText(project.content);
+---
+
+<Layout
+  title={project.title}
+  description={project.description ?? project.title}
+  ogImage={project.image}
+>
+  <PageHeading title={project.title} description={project.description ?? ''} />
+
+  {
+    project.image && (
+      <section class="screenshot">
+        <img src={project.image} alt={`Screenshot of ${project.title}`} />
+      </section>
+    )
+  }
+
+  {
+    body && (
+      <Reveal>
+        <section class="secondaryBG">
+          <div class="contentful-content" set:html={body} />
+        </section>
+      </Reveal>
+    )
+  }
+
+  {more.length > 0 && <CardList title="More Projects" items={more} base="/projects" />}
+</Layout>
+
+<style>
+  .screenshot {
+    text-align: center;
+    padding: 25px 5vw;
+  }
+
+  .screenshot img {
+    max-height: 500px;
+    max-width: 95%;
+    border-radius: 10px;
+  }
+
+  .secondaryBG {
+    --rt-rule: #ffffff;
+    color: var(--colour-bg);
+  }
+</style>

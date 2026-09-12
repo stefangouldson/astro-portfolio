@@ -1,0 +1,21 @@
+---
+import LogoWall, { type Company } from './LogoWall.astro';
+
+/** Employers, alongside the career timeline. */
+const companies: Company[] = [
+  { name: 'CheqUp', img: '/logos/CheqUp.png', link: 'https://chequp.com' },
+  {
+    name: 'MOJO CX',
+    img: 'https://assets.website-files.com/634696090094d4d24293e328/63473120f324e442e0ab44e1_MOJO_CX_LOGO_MASTER.svg',
+    link: 'https://tmac.ai',
+  },
+  { name: 'Cool Studio', img: '/logos/cool-studio-nobg.png', link: 'https://cool.studio' },
+  {
+    name: 'Caspian Insurance',
+    img: '/logos/Caspian-Insurance.png',
+    link: 'https://caspianinsurance.co.uk',
+  },
+];
+---
+
+<LogoWall title="Worked At" companies={companies} />

@@ -1,0 +1,153 @@
+---
+import type { CardItem } from '../../lib/contentful';
+
+interface Props {
+  item: CardItem;
+  /** Route prefix, e.g. "/projects". */
+  base: string;
+  /** "orange" cards sit on white sections, "dark" cards on orange ones. */
+  variant: 'orange' | 'dark';
+}
+
+const { item, base, variant } = Astro.props;
+const tags = [...item.tags].sort((a, b) => a.localeCompare(b));
+---
+
+<article
+  class:list={['card', `card--${variant}`]}
+  style={item.image ? `--card-image: url('${item.image}')` : undefined}
+>
+  <a class="card__link" href={`${base}/${item.slug}`}>
+    <h3 class="card__title">{item.title}</h3>
+
+    <div class="card__reveal">
+      {item.description && <p class="card__description">{item.description}</p>}
+      {
+        tags.length > 0 && (
+          <ul class="card__tags">
+            {tags.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    {item.publishedAt && <p class="card__date">{item.publishedAt}</p>}
+  </a>
+</article>
+
+<style>
+  .card {
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);
+    border-radius: 10px;
+    min-height: 275px;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-image: linear-gradient(to right, #22283180, #22283180), var(--card-image);
+    transition:
+      background-color 300ms ease-in-out,
+      border-color 300ms ease-in-out;
+  }
+
+  /* Swapping to a flat colour on hover puts the description on a clean field. */
+  .card:hover,
+  .card:focus-within {
+    background-image: none;
+  }
+
+  .card--orange {
+    border: 2px solid var(--colour-accent);
+    background-color: var(--colour-accent);
+  }
+
+  .card--orange:hover,
+  .card--orange:focus-within {
+    border-color: var(--colour-bg);
+  }
+
+  .card--dark {
+    border: 2px solid var(--colour-bg);
+    background-color: var(--colour-bg);
+  }
+
+  .card--dark:hover,
+  .card--dark:focus-within {
+    border-color: #ffffff;
+  }
+
+  .card__link {
+    padding: 2px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 275px;
+    height: 100%;
+    text-decoration: none;
+    color: #ffffff;
+  }
+
+  .card__link:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: -6px;
+    border-radius: 8px;
+  }
+
+  .card__title {
+    margin: 0.5rem 0;
+  }
+
+  .card__reveal {
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
+  }
+
+  .card:hover .card__reveal,
+  .card:focus-within .card__reveal {
+    opacity: 1;
+  }
+
+  .card__description {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+  }
+
+  .card__tags li {
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 5px;
+    font-size: x-small;
+  }
+
+  .card--orange .card__tags li {
+    background: var(--colour-bg);
+  }
+
+  .card--dark .card__tags li {
+    background: var(--colour-accent);
+    color: var(--colour-bg);
+  }
+
+  .card__date {
+    margin: 0 0 0.5rem auto;
+    font-size: 1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .card__reveal {
+      transition: none;
+    }
+  }
+</style>

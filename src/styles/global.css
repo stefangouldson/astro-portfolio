@@ -1,0 +1,293 @@
+/* ---------------------------------------------------------------
+   Global tokens
+   --------------------------------------------------------------- */
+:root {
+  --colour-bg: #222831;
+  --colour-accent: #ffa500;
+  --colour-text: #ffffff;
+
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-fancy: 'Courgette', cursive;
+  --font-body: 'Open Sans', system-ui, sans-serif;
+
+  --nav-height: 50vh;
+  --nav-duration: 650ms;
+  --ease-nav: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Decorative motion only (hover scales, staggers). Zeroed for reduced motion;
+     the nav slide is functional feedback, so it keeps running either way. */
+  --motion-decorative: 500ms;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Anchor jumps glide; the nav does its own scrolling for the same reason.
+   Set on both: body's overflow-x below makes it a scroll container, and it
+   would otherwise jump instantly while the viewport eased. */
+@media (prefers-reduced-motion: no-preference) {
+  html,
+  body {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--colour-bg);
+  color: var(--colour-text);
+  font-family: var(--font-mono);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* ---------------------------------------------------------------
+   Type scale
+   --------------------------------------------------------------- */
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+p  { font-size: 1.25rem; }
+button { font-size: 1.5rem; }
+
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2, .section-title { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  p  { font-size: 1.125rem; }
+  button { font-size: 1.25rem; }
+}
+
+@media (max-width: 576px) {
+  h1 { font-size: 1.75rem; }
+  h2, .section-title { font-size: 1.25rem; }
+  h3 { font-size: 1.125rem; }
+  p  { font-size: 1rem; }
+  button { font-size: 1.125rem; }
+}
+
+/* ---------------------------------------------------------------
+   Helpers
+   --------------------------------------------------------------- */
+.font-jet { font-family: var(--font-mono) !important; }
+.font-open { font-family: var(--font-body); }
+.content { padding: 100px 5vw; }
+/* One-pager sub-headings: h3 in the outline, h2 to the eye. */
+.section-title { font-size: 2rem; }
+.primaryBG { background-color: var(--colour-bg); }
+.secondaryBG { background-color: var(--colour-accent); }
+.whiteBG { background-color: #ffffff; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------
+   Buttons
+   --------------------------------------------------------------- */
+.button {
+  display: inline-block;
+  background-color: var(--colour-accent);
+  border: 1px solid var(--colour-accent);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--colour-bg);
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition:
+    background-color 300ms ease,
+    color 300ms ease,
+    border-color 300ms ease;
+}
+
+.button:hover:not(:disabled) {
+  background-color: var(--colour-bg);
+  color: var(--colour-accent);
+  border-color: var(--colour-bg);
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--colour-bg);
+  outline-offset: 3px;
+}
+
+.button:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .button { font-size: 1.25rem; }
+}
+
+@media (max-width: 576px) {
+  .button { font-size: 1.125rem; }
+}
+
+/* ---------------------------------------------------------------
+   Forms
+   --------------------------------------------------------------- */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.form-control {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.input {
+  border: 2px solid var(--colour-bg);
+  border-radius: 4px;
+  padding: 12px 20px;
+  font-family: var(--font-body);
+  font-size: 20px;
+  width: min(100%, 40rem);
+}
+
+.input:focus-visible {
+  border-color: var(--colour-accent);
+  outline: 2px solid var(--colour-accent);
+  outline-offset: 1px;
+}
+
+.input-error {
+  border-color: #c00000;
+  background-color: rgb(255 0 0 / 8%);
+}
+
+/* ---------------------------------------------------------------
+   Rich text rendered from Contentful
+   --------------------------------------------------------------- */
+.contentful-content {
+  font-family: var(--font-body);
+  font-size: 150%;
+  padding: 100px 10vw;
+}
+
+.contentful-content p {
+  font-size: inherit;
+}
+
+.contentful-content .rt-heading {
+  border-bottom: 2px solid var(--rt-rule, currentColor);
+  font-size: 150%;
+  margin-top: 2rem;
+  padding-bottom: 0.25rem;
+}
+
+.contentful-content .rt-figure {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.contentful-content .rt-figure img {
+  max-width: 100%;
+  height: auto;
+  border: var(--rt-figure-border, none);
+}
+
+.contentful-content a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+.contentful-content blockquote {
+  border-left: 4px solid var(--rt-rule, currentColor);
+  margin-left: 0;
+  padding-left: 1rem;
+}
+
+.contentful-content code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+@media only screen and (max-width: 760px) {
+  .contentful-content {
+    font-size: 100%;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Scroll reveal — armed by JS, so no-JS visitors never see blank space
+   --------------------------------------------------------------- */
+.reveal-armed {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 700ms ease,
+    transform 700ms var(--ease-nav);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------------------------------------------------------------
+   Layout shell — main slides up to reveal the navbar underneath
+   --------------------------------------------------------------- */
+main,
+.site-footer {
+  display: block;
+  transition: transform var(--nav-duration) var(--ease-nav);
+  will-change: transform;
+  z-index: 1;
+}
+
+/* The footer sits outside <main> to stay the page's footer, so it needs the
+   same slide — otherwise the nav opens over a footer that has not moved. */
+:root.nav-open main,
+:root.nav-open .site-footer {
+  transform: translateY(-50vh);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-decorative: 0s;
+  }
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--colour-accent);
+}

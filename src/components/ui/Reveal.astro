@@ -1,0 +1,40 @@
+---
+interface Props {
+  /** Milliseconds to wait after the element scrolls into view. */
+  delay?: number;
+  class?: string;
+}
+
+const { delay = 150, class: className } = Astro.props;
+---
+
+<div
+  data-reveal
+  class:list={['reveal', className]}
+  style={delay ? `--reveal-delay: ${delay}ms` : undefined}
+>
+  <slot />
+</div>
+
+<script>
+  // Arming from JS means no-JS visitors get the content at full opacity.
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+  if (!prefersReduced && 'IntersectionObserver' in window) {
+    targets.forEach((el) => el.classList.add('reveal-armed'));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('reveal-in');
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -10% 0px' },
+    );
+
+    targets.forEach((el) => observer.observe(el));
+  }
+</script>

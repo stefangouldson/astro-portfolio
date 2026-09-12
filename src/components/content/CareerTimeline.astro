@@ -1,0 +1,162 @@
+---
+import Reveal from '../ui/Reveal.astro';
+import career from '../../data/career.json';
+---
+
+<Reveal>
+  <div class="whiteBG content timeline-wrap">
+    <ol class="timeline">
+      {career.map((job) => (
+        <li class="timeline__item">
+          <p class="timeline__period">{job.period}</p>
+          <h3 class="timeline__role">{job.role}</h3>
+          {job.company && <p class="timeline__company">{job.company}</p>}
+          {job.summary.map((paragraph) => (
+            <p class="timeline__summary">{paragraph}</p>
+          ))}
+          {job.tags.length > 0 && (
+            <ul class="timeline__tags">
+              {job.tags.map((tag) => <li class="timeline__tag">{tag}</li>)}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ol>
+  </div>
+</Reveal>
+
+<style>
+  /* White band under the dark heading, same rhythm as the other sections. */
+  .timeline-wrap {
+    color: var(--colour-bg);
+  }
+
+  .timeline {
+    position: relative;
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 1200px;
+  }
+
+  /* One continuous rail down the middle, rather than a slice per entry. */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 0.8rem;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    margin-left: -1px;
+    background-color: #d3d8e0;
+  }
+
+  /* Entries alternate sides, each taking the half the rail leaves free. */
+  .timeline__item {
+    position: relative;
+    width: 50%;
+    padding: 0 2.5rem 3rem 0;
+  }
+
+  .timeline__item:nth-child(even) {
+    margin-left: 50%;
+    padding: 0 0 3rem 2.5rem;
+  }
+
+  .timeline__item:last-child {
+    padding-bottom: 0;
+  }
+
+  /* The dot, straddling the rail on whichever edge faces it. */
+  .timeline__item::before {
+    content: '';
+    position: absolute;
+    top: 0.3rem;
+    height: 1rem;
+    width: 1rem;
+    border-radius: 50%;
+    background-color: var(--colour-accent);
+    box-shadow: 0 0 0 4px #ffffff;
+  }
+
+  .timeline__item:nth-child(odd)::before {
+    right: -0.5rem;
+  }
+
+  .timeline__item:nth-child(even)::before {
+    left: -0.5rem;
+  }
+
+  .timeline__period {
+    color: var(--colour-accent);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .timeline__role {
+    color: var(--colour-bg);
+    font-size: 1.5rem;
+    margin: 0.25rem 0 0;
+  }
+
+  .timeline__company {
+    color: #5a6270;
+    font-size: 1.125rem;
+    margin: 0.15rem 0 0;
+  }
+
+  .timeline__summary {
+    color: #3d444f;
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    margin: 0.75rem 0 0;
+  }
+
+  /* A role with no company keeps the same gap under its title. */
+  .timeline__role + .timeline__summary {
+    margin-top: 0.6rem;
+  }
+
+  .timeline__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+  }
+
+  .timeline__tag {
+    font-size: 0.875rem;
+    padding: 2px 10px;
+    border: 1px solid #b9c0cb;
+    border-radius: 999px;
+    color: #5a6270;
+  }
+
+  /* Too narrow for two columns — fall back to a single rail on the left. */
+  @media (max-width: 900px) {
+    .timeline::before {
+      left: 0.5rem;
+    }
+
+    .timeline__item,
+    .timeline__item:nth-child(even) {
+      width: 100%;
+      margin-left: 0;
+      padding: 0 0 2.5rem 2rem;
+    }
+
+    .timeline__item:nth-child(odd)::before,
+    .timeline__item:nth-child(even)::before {
+      left: 0;
+      right: auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .timeline__role { font-size: 1.25rem; }
+    .timeline__company,
+    .timeline__summary { font-size: 1rem; }
+  }
+</style>
