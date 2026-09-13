@@ -15,20 +15,26 @@ interface Props {
 const { title, companies } = Astro.props;
 ---
 
-<Reveal delay={250}>
-  <section class="secondaryBG content">
+<section class="secondaryBG content">
+  <Reveal delay={250}>
     <h3 class="section-title">{title}</h3>
-    <div class="logos">
-      {
-        companies.map((company) => (
-          <a class="logo-card" href={company.link} target="_blank" rel="noopener">
-            <img src={company.img} alt={company.name} loading="lazy" />
-          </a>
-        ))
-      }
-    </div>
-  </section>
-</Reveal>
+  </Reveal>
+  <div class="logos">
+    {
+      companies.map((company) => (
+        <a
+          class="logo-card flip-in"
+          data-logo-card
+          href={company.link}
+          target="_blank"
+          rel="noopener"
+        >
+          <img src={company.img} alt={company.name} loading="lazy" />
+        </a>
+      ))
+    }
+  </div>
+</section>
 
 <style>
   h3 {
@@ -87,3 +93,19 @@ const { title, companies } = Astro.props;
     }
   }
 </style>
+
+<script>
+  // Logos flip up one at a time as the wall scrolls in. Both walls on the page
+  // share this; they are far enough apart never to cross together. Armed from
+  // JS, so without it the logos are simply there.
+  import { motionAllowed } from '../../lib/motion';
+  import { staggerIn } from '../../lib/stagger';
+
+  if (motionAllowed()) {
+    staggerIn([...document.querySelectorAll<HTMLElement>('[data-logo-card]')], {
+      // Only a handful in a row, so give each its own beat.
+      stagger: 130,
+      threshold: 0.3,
+    });
+  }
+</script>

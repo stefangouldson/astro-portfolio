@@ -28,6 +28,15 @@
   line-height: 0.8em;
 }
 
+/* The shared mask clips its overflow, which would cut the cipher here: .fancy
+   runs a 0.8em line-height under a 1.3em face, so the glyphs sit outside the
+   box by design. Keep the cipher on one line and let .side's overflow contain
+   it instead. */
+.welcome .scramble__mask {
+  overflow: visible;
+  white-space: nowrap;
+}
+
 #left-side {
   background-color: var(--colour-bg);
   width: 65%;

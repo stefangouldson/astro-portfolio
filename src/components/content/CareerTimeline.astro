@@ -1,29 +1,28 @@
 ---
-import Reveal from '../ui/Reveal.astro';
 import career from '../../data/career.json';
 ---
 
-<Reveal>
-  <div class="whiteBG content timeline-wrap">
-    <ol class="timeline">
-      {career.map((job) => (
-        <li class="timeline__item">
-          <p class="timeline__period">{job.period}</p>
-          <h3 class="timeline__role">{job.role}</h3>
-          {job.company && <p class="timeline__company">{job.company}</p>}
-          {job.summary.map((paragraph) => (
-            <p class="timeline__summary">{paragraph}</p>
-          ))}
-          {job.tags.length > 0 && (
-            <ul class="timeline__tags">
-              {job.tags.map((tag) => <li class="timeline__tag">{tag}</li>)}
-            </ul>
-          )}
-        </li>
-      ))}
-    </ol>
-  </div>
-</Reveal>
+<!-- No <Reveal> here: every entry animates itself in, so a band-level fade on
+     top of that would only muddy it. -->
+<div class="whiteBG content timeline-wrap">
+  <ol class="timeline">
+    {career.map((job) => (
+      <li class="timeline__item rise-in" data-timeline-item>
+        <p class="timeline__period">{job.period}</p>
+        <h3 class="timeline__role">{job.role}</h3>
+        {job.company && <p class="timeline__company">{job.company}</p>}
+        {job.summary.map((paragraph) => (
+          <p class="timeline__summary">{paragraph}</p>
+        ))}
+        {job.tags.length > 0 && (
+          <ul class="timeline__tags">
+            {job.tags.map((tag) => <li class="timeline__tag">{tag}</li>)}
+          </ul>
+        )}
+      </li>
+    ))}
+  </ol>
+</div>
 
 <style>
   /* White band under the dark heading, same rhythm as the other sections. */
@@ -160,3 +159,18 @@ import career from '../../data/career.json';
     .timeline__summary { font-size: 1rem; }
   }
 </style>
+
+<script>
+  // Entries rise into place as you scroll down to them, one after another.
+  // Armed from JS, so without it they are simply there.
+  import { motionAllowed } from '../../lib/motion';
+  import { staggerIn } from '../../lib/stagger';
+
+  if (motionAllowed()) {
+    staggerIn([...document.querySelectorAll<HTMLElement>('[data-timeline-item]')], {
+      stagger: 90,
+      // Entries run tall, so wait on less of one than a card.
+      threshold: 0.15,
+    });
+  }
+</script>

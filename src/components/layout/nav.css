@@ -33,6 +33,36 @@
   outline-offset: 4px;
 }
 
+/* Pulses while the page is moving. The resting frame is `currentColor`
+   because the border already matches the icon in both states — accent on the
+   dark closed button, dark on the orange open one — so one keyframe covers
+   both without knowing which is showing. The ring is a box-shadow rather than
+   a thicker border: a border-width change would resize the content box under
+   the icon. */
+#nav-toggle.isScrolling {
+  animation: nav-pulse 800ms ease-in-out infinite;
+}
+
+@keyframes nav-pulse {
+  0%,
+  100% {
+    border-color: currentColor;
+    box-shadow: 0 0 4rem rgb(0 0 0 / 35%);
+  }
+  50% {
+    border-color: #ffffff;
+    box-shadow:
+      0 0 4rem rgb(0 0 0 / 35%),
+      0 0 0 5px rgb(255 255 255 / 22%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #nav-toggle.isScrolling {
+    animation: none;
+  }
+}
+
 #nav-toggle svg {
   height: 40px;
   width: 40px;

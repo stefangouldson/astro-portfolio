@@ -37,6 +37,7 @@ const layoutTop = (element: HTMLElement) => {
 
 export default function Nav({ pathname }: Props) {
   const [open, setOpen] = useState(false);
+  const [scrolling, setScrolling] = useState(false);
   // Project detail pages are not on the one-pager, so flag Projects by path.
   const [active, setActive] = useState(() =>
     pathname.startsWith('/projects/') ? 'projects' : '',
@@ -56,6 +57,36 @@ export default function Nav({ pathname }: Props) {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [open]);
+
+  // The button pulses while the page is moving, and goes quiet a moment after
+  // it stops. This runs on every scroll event, so the live flag is a plain
+  // variable and setState is called exactly twice per scroll — once on the
+  // first event, once when it goes quiet — rather than on every one and
+  // leaning on React to bail out.
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+
+    let moving = false;
+    let idle = 0;
+
+    const onScroll = () => {
+      if (!moving) {
+        moving = true;
+        setScrolling(true);
+      }
+      clearTimeout(idle);
+      idle = window.setTimeout(() => {
+        moving = false;
+        setScrolling(false);
+      }, 200);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(idle);
+    };
+  }, []);
 
   // Which section is under the middle of the viewport. Paused while the nav is
   // open, because sliding <main> up would otherwise flip the highlight to the
@@ -110,7 +141,7 @@ export default function Nav({ pathname }: Props) {
       <button
         id="nav-toggle"
         type="button"
-        className={open ? 'isOpen' : 'isClosed'}
+        className={`${open ? 'isOpen' : 'isClosed'}${scrolling ? ' isScrolling' : ''}`}
         aria-expanded={open}
         aria-controls="site-nav"
         aria-label={open ? 'Close menu' : 'Open menu'}

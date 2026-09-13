@@ -32,7 +32,13 @@ const { delay = 150, class: className } = Astro.props;
           observer.unobserve(entry.target);
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -10% 0px' },
+      // threshold MUST stay 0. A ratio is a fraction of the ELEMENT, not of the
+      // viewport, so anything taller than ~10 viewports can never reach 0.1 --
+      // it would arm itself to opacity 0 and never reveal. Reveal wraps whole
+      // sections, including the rich text on a project page, which runs to 13
+      // viewports on a laptop. The bottom margin is what holds the reveal back
+      // until the element is properly in view.
+      { threshold: 0, rootMargin: '0px 0px -10% 0px' },
     );
 
     targets.forEach((el) => observer.observe(el));

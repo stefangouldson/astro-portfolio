@@ -84,3 +84,15 @@ const variant = color === 'white' ? 'orange' : 'dark';
     .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   }
 </style>
+
+<script>
+  // Project cards fly in one at a time as each row crosses into view, then
+  // drift — the same treatment as the Key Skills grid. Armed from JS, so
+  // without it (or under prefers-reduced-motion) the cards are simply there.
+  import { motionAllowed } from '../../lib/motion';
+  import { staggerIn } from '../../lib/stagger';
+
+  if (motionAllowed()) {
+    staggerIn([...document.querySelectorAll<HTMLElement>('[data-link-card]')]);
+  }
+</script>

@@ -10,6 +10,12 @@
   --font-fancy: 'Courgette', cursive;
   --font-body: 'Open Sans', system-ui, sans-serif;
 
+  /* Cards read as lifted off the page: an even halo on all four sides, then
+     a softer cast below it for the weight. */
+  --shadow-lift:
+    0 0 12px 2px rgb(0 0 0 / 16%),
+    0 12px 26px -6px rgb(0 0 0 / 38%);
+
   --nav-height: 50vh;
   --nav-duration: 650ms;
   --ease-nav: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -253,6 +259,234 @@ form {
 .reveal-in {
   opacity: 1;
   transform: none;
+}
+
+/* ---------------------------------------------------------------
+   Card entrance and drift — shared by the Key Skills grid and the
+   project cards. Armed by JS (`is-armed`, then `is-in` per card as it
+   scrolls in), so without it the cards are simply there, unanimated.
+   See src/lib/stagger.ts.
+   --------------------------------------------------------------- */
+.float-in.is-armed {
+  opacity: 0;
+}
+
+/* The drift is listed second so it takes the transform back off the
+   entrance once its delay is up, landing on the same resting position.
+   Split these across two rules and one clobbers the other. */
+.float-in.is-in {
+  animation:
+    card-rise 620ms var(--ease-nav) var(--stagger, 0ms) both,
+    card-drift var(--float-duration, 11s) ease-in-out calc(var(--stagger, 0ms) + 620ms) infinite;
+}
+
+@keyframes card-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* A few pixels of drift — enough to feel alive, not enough to read as
+   movement if you look straight at it. */
+@keyframes card-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate3d(var(--float-x), var(--float-y), 0) rotate(var(--float-r));
+  }
+  50% {
+    transform: translate3d(calc(var(--float-x) * -0.7), calc(var(--float-y) * -0.8), 0)
+      rotate(calc(var(--float-r) * -1));
+  }
+  75% {
+    transform: translate3d(calc(var(--float-x) * -0.3), calc(var(--float-y) * 0.9), 0)
+      rotate(calc(var(--float-r) * 0.5));
+  }
+}
+
+/* Six paths and six clocks, cycling down the grid, so no two neighbours
+   ever drift in step whatever the column count at this breakpoint. */
+.float-in:nth-child(6n + 1) {
+  --float-x: 5px;
+  --float-y: -6px;
+  --float-r: 0.35deg;
+  --float-duration: 11s;
+}
+.float-in:nth-child(6n + 2) {
+  --float-x: -6px;
+  --float-y: -4px;
+  --float-r: -0.3deg;
+  --float-duration: 13s;
+}
+.float-in:nth-child(6n + 3) {
+  --float-x: 4px;
+  --float-y: 6px;
+  --float-r: 0.4deg;
+  --float-duration: 12s;
+}
+.float-in:nth-child(6n + 4) {
+  --float-x: -5px;
+  --float-y: 5px;
+  --float-r: -0.35deg;
+  --float-duration: 14s;
+}
+.float-in:nth-child(6n + 5) {
+  --float-x: 6px;
+  --float-y: -5px;
+  --float-r: 0.3deg;
+  --float-duration: 10.5s;
+}
+.float-in:nth-child(6n + 6) {
+  --float-x: -4px;
+  --float-y: -6px;
+  --float-r: -0.4deg;
+  --float-duration: 12.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-in.is-armed {
+    opacity: 1;
+  }
+
+  .float-in.is-in {
+    animation: none;
+  }
+}
+
+/* Rise only, no drift: the timeline entries come up into place as you
+   reach them, and a drifting entry would pull its dot off the rail. */
+.rise-in.is-armed {
+  opacity: 0;
+}
+
+.rise-in.is-in {
+  animation: item-rise 700ms var(--ease-nav) var(--stagger, 0ms) both;
+}
+
+@keyframes item-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise-in.is-armed {
+    opacity: 1;
+  }
+
+  .rise-in.is-in {
+    animation: none;
+  }
+}
+
+/* Logos swing up from edge-on, one after another along the row. The
+   perspective is per-element, so each flips about its own centre rather
+   than sharing one vanishing point away at the end of the wall. */
+.flip-in.is-armed {
+  opacity: 0;
+}
+
+.flip-in.is-in {
+  animation: logo-flip 650ms var(--ease-nav) var(--stagger, 0ms) both;
+}
+
+@keyframes logo-flip {
+  from {
+    opacity: 0;
+    transform: perspective(600px) rotateY(-90deg);
+  }
+  55% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: perspective(600px) rotateY(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-in.is-armed {
+    opacity: 1;
+  }
+
+  .flip-in.is-in {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Text decrypt — the cipher is painted into a mask laid over the real
+   text, which keeps its space in the layout (visibility, not display),
+   so swapping glyphs can never reflow anything. Armed by JS, so without
+   it the text simply reads. See src/lib/scramble.ts.
+   --------------------------------------------------------------- */
+.scramble {
+  position: relative;
+  display: block;
+}
+
+.scramble__mask {
+  display: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.is-ciphered .scramble__real {
+  visibility: hidden;
+}
+
+.is-ciphered .scramble__mask {
+  display: block;
+}
+
+/* Typewriter — same two-layer trick as the decrypt above, so the line
+   count never changes as the text fills in. See src/lib/typewriter.ts. */
+.typed {
+  position: relative;
+  display: block;
+}
+
+.typed__mask {
+  display: none;
+  position: absolute;
+  inset: 0;
+}
+
+.typed.is-typing .typed__real {
+  visibility: hidden;
+}
+
+.typed.is-typing .typed__mask {
+  display: block;
+}
+
+/* The negative margin cancels the caret's own width, so it can never be what
+   pushes the word being typed onto the next line. */
+.typed__caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-right: -2px;
+  vertical-align: -0.12em;
+  background-color: var(--colour-accent);
+  transition: opacity 300ms ease;
+}
+
+.typed.is-done .typed__caret {
+  opacity: 0;
 }
 
 /* ---------------------------------------------------------------

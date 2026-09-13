@@ -13,7 +13,7 @@ import techstack from '../../data/techstack.json';
     <ul class="tech-grid">
       {techstack.map((tech) => (
         <li>
-          <a class="tech-item" href={tech.url} target="_blank" rel="noopener">
+          <a class="tech-item" data-tech-item href={tech.url} target="_blank" rel="noopener">
             {tech.name}
           </a>
         </li>
@@ -65,6 +65,67 @@ import techstack from '../../data/techstack.json';
     background-color: var(--colour-accent);
   }
 
+  /* Each chip arrives wearing its own hover state and settles out of it, so a
+     wash of orange runs across the grid as it comes in. Armed from JS, so
+     without it the chips are simply there.
+
+     Two animations rather than one, and the fill modes are the whole point:
+     chip-in holds its end state (`both`) to beat the opacity of `.is-armed`,
+     while chip-flash is `backwards` so that nothing is held once it is done.
+     A finished animation outranks a normal rule, so a `both` here would leave
+     33 chips permanently overriding their own :hover. */
+  .tech-item.is-armed {
+    opacity: 0;
+  }
+
+  .tech-item.is-in {
+    animation:
+      chip-in 420ms var(--ease-nav) var(--stagger, 0ms) both,
+      chip-flash 620ms ease-out var(--stagger, 0ms) backwards;
+  }
+
+  @keyframes chip-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0) scale(0.92);
+    }
+    60% {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes chip-flash {
+    from,
+    45% {
+      color: #000000;
+      background-color: var(--colour-accent);
+      border-color: var(--colour-accent);
+    }
+    to {
+      color: var(--colour-accent);
+      background-color: transparent;
+      border-color: #000000;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tech-item {
+      transition: none;
+    }
+
+    .tech-item.is-armed {
+      opacity: 1;
+    }
+
+    .tech-item.is-in {
+      animation: none;
+    }
+  }
+
   @media (min-width: 768px) {
     .tech-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -80,3 +141,19 @@ import techstack from '../../data/techstack.json';
     .tech-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   }
 </style>
+
+<script>
+  // 33 chips, so the entrance is deliberately cheap: one observer that drops
+  // each target as it lands, one-shot animations with nothing left running
+  // afterwards, and a tight stagger so a screenful does not take seconds to
+  // finish arriving.
+  import { motionAllowed } from '../../lib/motion';
+  import { staggerIn } from '../../lib/stagger';
+
+  if (motionAllowed()) {
+    staggerIn([...document.querySelectorAll<HTMLElement>('[data-tech-item]')], {
+      stagger: 40,
+      threshold: 0.3,
+    });
+  }
+</script>

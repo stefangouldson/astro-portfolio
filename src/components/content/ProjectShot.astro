@@ -1,0 +1,216 @@
+---
+interface Props {
+  image: string;
+  title: string;
+  /** Shown on the back of the card, so turning it over pays for itself. */
+  description?: string;
+}
+
+const { image, title, description } = Astro.props;
+---
+
+<section class="shot" data-shot>
+  <div class="shot__stage" data-shot-stage>
+    <div class="shot__sway">
+      <div class="shot__card" aria-describedby="shot-hint">
+        <img
+          class="shot__face shot__face--front"
+          src={image}
+          alt={`Screenshot of ${title}`}
+          draggable="false"
+        />
+        <div class="shot__face shot__face--back">
+          {description && <p class="shot__back-text">{description}</p>}
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="shot__hint" id="shot-hint">Drag to spin — or use the arrow keys</p>
+
+</section>
+
+<style>
+  .shot {
+    text-align: center;
+    padding: 25px 5vw;
+  }
+
+  /* The stage owns the vanishing point, so the card turns about its own
+     centre rather than sliding across one shared with the page. */
+  .shot__stage {
+    display: inline-block;
+    max-width: 95%;
+    perspective: 1400px;
+  }
+
+  /* The idle sway lives on its own layer so it never fights the drag: this
+     one turns on a CSS clock, the card inside it answers to the pointer, and
+     the two compose. Put both on one element and each overwrites the other's
+     transform. It is also the affordance — the card catches the eye by moving,
+     rather than by the line of text underneath. */
+  .shot__sway {
+    display: inline-block;
+    transform-style: preserve-3d;
+  }
+
+  .shot.is-armed .shot__sway {
+    animation: shot-sway 9s ease-in-out infinite;
+  }
+
+  /* Out of the way the moment it is grabbed, and back once it has settled. A
+     paused animation resumes where it stopped, so nothing jumps. */
+  .shot.is-busy .shot__sway {
+    animation-play-state: paused;
+  }
+
+  @keyframes shot-sway {
+    0%,
+    100% {
+      transform: rotateY(-6deg) rotateX(2deg);
+    }
+    50% {
+      transform: rotateY(6deg) rotateX(-2deg);
+    }
+  }
+
+  /* Shrink-wrapped to the image, so the back face's `inset: 0` lands on
+     exactly the front's box. Size the image with percentages of the card
+     instead and the two come out different widths. */
+  .shot__card {
+    position: relative;
+    display: inline-block;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    border-radius: 10px;
+  }
+
+  /* Armed from JS: without it this is simply a screenshot. */
+  .shot.is-armed .shot__card {
+    user-select: none;
+  }
+
+  /* Touch has no hover, so there it stays a drag — and a vertical swipe has to
+     stay a page scroll, or the card traps the reader mid-page. */
+  .shot.is-draggable .shot__card {
+    cursor: grab;
+    touch-action: pan-y;
+  }
+
+  .shot.is-draggable .shot__card.is-grabbing {
+    cursor: grabbing;
+  }
+
+  .shot__card:focus-visible {
+    outline: 3px solid var(--colour-accent);
+    outline-offset: 8px;
+  }
+
+  /* Hiding the far side is what lets the back face exist at all — without it
+     the front shows through mirrored as the card turns past square on. */
+  .shot__face {
+    backface-visibility: hidden;
+    border-radius: 10px;
+    box-shadow: var(--shadow-lift);
+  }
+
+  .shot__face--front {
+    display: block;
+    max-height: 500px;
+    max-width: 100%;
+    -webkit-user-drag: none;
+  }
+
+  /* The back sits exactly over the front, turned away from the viewer. */
+  .shot__face--back {
+    position: absolute;
+    inset: 0;
+    /* Flex, not `grid` + `place-items`, which would centre the label and the
+       line each in their own row and leave them adrift from one another. */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* The gap lives here rather than as a margin on the line below: Astro
+       scopes `> *` to a higher specificity than a plain class, so the reset
+       under it wins and a child margin is silently dropped. */
+    gap: 0.75rem;
+    text-align: center;
+    padding: 2rem;
+    transform: rotateY(180deg);
+    background-color: var(--colour-bg);
+    border: 2px solid var(--colour-accent);
+  }
+
+  .shot__face--back > * {
+    margin: 0;
+    max-width: 40ch;
+  }
+
+  .shot__back-text {
+    color: #ffffff;
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+  }
+
+  .shot__hint {
+    display: none;
+    color: #8b93a1;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    margin: 1rem 0 0;
+  }
+
+  /* Only promise the interaction once it actually exists. */
+  .shot.is-armed .shot__hint {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .shot__back-text { font-size: 1rem; }
+    .shot__face--back { gap: 0.5rem; padding: 1.25rem; }
+  }
+
+  /* The sway is motion of its own, so it goes; the drag is the visitor's own
+     hand, so it stays. */
+  @media (prefers-reduced-motion: reduce) {
+    .shot.is-armed .shot__sway {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // The screenshot becomes a card you can grab and spin. Armed from JS, so
+  // without it the section is just the image it always was.
+  import { motionAllowed } from '../../lib/motion';
+  import { armSpin } from '../../lib/spin';
+
+  const shot = document.querySelector<HTMLElement>('[data-shot]');
+  const card = shot?.querySelector<HTMLElement>('.shot__card');
+  const stage = shot?.querySelector<HTMLElement>('[data-shot-stage]');
+
+  if (shot && card && stage && window.PointerEvent) {
+    // With a pointer, sweeping across the card turns it — no button to hold.
+    // Touch has no hover, so there it keeps the drag.
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    armSpin(card, {
+      mode: canHover ? 'hover' : 'drag',
+      surface: stage,
+      // The turn follows the visitor's own hand either way; only the throw and
+      // the settle glide answer to prefers-reduced-motion.
+      momentum: motionAllowed(),
+      busy: shot,
+    });
+
+    card.tabIndex = 0;
+    shot.classList.add('is-armed');
+
+    if (canHover) {
+      const hint = document.getElementById('shot-hint');
+      if (hint) hint.textContent = 'Sweep across to spin — or use the arrow keys';
+    } else {
+      shot.classList.add('is-draggable');
+    }
+  }
+</script>

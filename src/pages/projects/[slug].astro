@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import PageHeading from '../../components/ui/PageHeading.astro';
 import CardList from '../../components/ui/CardList.astro';
 import Reveal from '../../components/ui/Reveal.astro';
+import ProjectShot from '../../components/content/ProjectShot.astro';
 import { getProjects } from '../../lib/contentful';
 import { renderRichText } from '../../lib/rich-text';
 
@@ -16,6 +17,9 @@ export async function getStaticPaths() {
 
 const { project, more } = Astro.props;
 const body = renderRichText(project.content);
+// The description rides on the back of the screenshot; with no screenshot to
+// turn over it stays under the title where it always was.
+const shot = project.image;
 ---
 
 <Layout
@@ -23,15 +27,9 @@ const body = renderRichText(project.content);
   description={project.description ?? project.title}
   ogImage={project.image}
 >
-  <PageHeading title={project.title} description={project.description ?? ''} />
+  <PageHeading title={project.title} description={shot ? undefined : project.description} />
 
-  {
-    project.image && (
-      <section class="screenshot">
-        <img src={project.image} alt={`Screenshot of ${project.title}`} />
-      </section>
-    )
-  }
+  {shot && <ProjectShot image={shot} title={project.title} description={project.description} />}
 
   {
     body && (
@@ -47,17 +45,6 @@ const body = renderRichText(project.content);
 </Layout>
 
 <style>
-  .screenshot {
-    text-align: center;
-    padding: 25px 5vw;
-  }
-
-  .screenshot img {
-    max-height: 500px;
-    max-width: 95%;
-    border-radius: 10px;
-  }
-
   .secondaryBG {
     --rt-rule: #ffffff;
     color: var(--colour-bg);

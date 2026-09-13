@@ -5,9 +5,19 @@ import skills from '../../data/skills.json';
 <ul class="skills-grid">
   {
     skills.map((skill) => (
-      <li class="skill-card">
-        <h4 class="skill-card__title">{skill.title}</h4>
-        <p class="skill-card__body">{skill.content}</p>
+      <li class="skill-card float-in" data-skill-card>
+        <h4 class="skill-card__title">
+          <span class="scramble" data-scramble>
+            <span class="scramble__real">{skill.title}</span>
+            <span class="scramble__mask" aria-hidden="true" />
+          </span>
+        </h4>
+        <p class="skill-card__body">
+          <span class="scramble" data-scramble>
+            <span class="scramble__real">{skill.content}</span>
+            <span class="scramble__mask" aria-hidden="true" />
+          </span>
+        </p>
       </li>
     ))
   }
@@ -28,8 +38,15 @@ import skills from '../../data/skills.json';
     background-color: var(--colour-bg);
     border: 2px solid var(--colour-bg);
     border-radius: 10px;
-    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);
+    box-shadow: var(--shadow-lift);
     padding: 1.5rem;
+  }
+
+  /* Armed from JS, so the card is only reachable by keyboard when it has
+     something to reveal. */
+  .skill-card:focus-visible {
+    outline: 3px solid var(--colour-accent);
+    outline-offset: 3px;
   }
 
   .skill-card__title {
@@ -58,3 +75,46 @@ import skills from '../../data/skills.json';
     }
   }
 </style>
+
+<script>
+  // Key Skills: the cards fly in one at a time as each row crosses into view,
+  // then drift (see src/lib/stagger.ts). The text underneath sits scrambled
+  // until you hover a card (desktop) or until it has landed (touch, where
+  // there is no hover). All of it is armed from JS like Reveal/PageHeading, so
+  // without JS -- or with prefers-reduced-motion -- the cards are simply there
+  // and readable.
+  import { armScramble } from '../../lib/scramble';
+  import { motionAllowed } from '../../lib/motion';
+  import { staggerIn } from '../../lib/stagger';
+
+  /** Re-scramble a card when the pointer leaves it, so the reveal can replay. */
+  const REPLAY_ON_LEAVE = false;
+
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-skill-card]')];
+
+  if (motionAllowed() && cards.length) {
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const fx = new Map(cards.map((card) => [card, armScramble(card)]));
+
+    if (canHover) {
+      cards.forEach((card) => {
+        // Focusable so the reveal is not pointer-only; the real text is always
+        // in the DOM, so screen readers never see the cipher either way.
+        card.tabIndex = 0;
+        card.addEventListener('mouseenter', () => fx.get(card)?.decrypt());
+        card.addEventListener('focus', () => fx.get(card)?.decrypt());
+        if (REPLAY_ON_LEAVE) {
+          card.addEventListener('mouseleave', () => fx.get(card)?.cipher());
+          card.addEventListener('blur', () => fx.get(card)?.cipher());
+        }
+      });
+    }
+
+    staggerIn(cards, {
+      // No hover to decrypt with on touch, so the text follows the card in.
+      onLand: canHover
+        ? undefined
+        : (card, delay) => window.setTimeout(() => fx.get(card)?.decrypt(), delay + 280),
+    });
+  }
+</script>

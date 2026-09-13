@@ -14,7 +14,8 @@ const tags = [...item.tags].sort((a, b) => a.localeCompare(b));
 ---
 
 <article
-  class:list={['card', `card--${variant}`]}
+  class:list={['card', 'float-in', `card--${variant}`]}
+  data-link-card
   style={item.image ? `--card-image: url('${item.image}')` : undefined}
 >
   <a class="card__link" href={`${base}/${item.slug}`}>
@@ -39,7 +40,7 @@ const tags = [...item.tags].sort((a, b) => a.localeCompare(b));
 
 <style>
   .card {
-    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);
+    box-shadow: var(--shadow-lift);
     border-radius: 10px;
     min-height: 275px;
     width: 100%;
