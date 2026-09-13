@@ -13,11 +13,11 @@
  },
  {
   "title": "Deployments",
-  "content": "Using AWS, I can deploy software built for optimized SEO. Deployments are done with reliabilty, performance and cost in mind depending on the project/business and their requirements."
+  "content": "Using AWS, I deploy software built for optimized SEO with reliabilty, performance and cost in mind. I automate the whole pipeline too: branches released to multiple environments and infrastructure built from code with Pulumi/Terraform."
  },
  {
-  "title": "DevOps Automation",
-  "content": "I have automated deployments to deploy selected branches of code to multiple environments, and I have automated creating AWS infrastructure using Pulumi/Terraform. Ideal for a SaaS company with multiple clients and products."
+  "title": "AI Integration",
+  "content": "I use AI to optimise how teams work and code, building custom agents and skills, connecting and organising documentation so it is actually usable, and writing a RAG MCP server that gives the AI far better data to answer from."
  },
  {
   "title": "Communication",
